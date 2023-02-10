@@ -15,9 +15,18 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 # Install the Calico Network Add-On on the Control Plane node
+# Reference: https://docs.tigera.io/calico/3.25/getting-started/kubernetes/quickstart
 # For other Network options, see
 # https://kubernetes.io/docs/concepts/cluster-administration/addons/
-kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+
+# Install the Tigera Calico operator and custom resource definitions.
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/tigera-operator.yaml
+
+# Install Calico by creating the necessary custom resource. 
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/custom-resources.yaml
+
+# FYI, install the calicoctl CLI tool to manage Calico resources and perform administrative functions following the link:
+# https://docs.tigera.io/calico/3.25/operations/calicoctl/install
 
 # Test Control Plane node. Expected to be in Ready state this time
 kubectl get nodes
