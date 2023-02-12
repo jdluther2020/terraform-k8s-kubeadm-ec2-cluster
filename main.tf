@@ -15,7 +15,8 @@ provider "aws" {
 
 # Defile any local vars
 locals {
-  pem_file = "~/.ssh/jdl-k8s-kp.pem"
+  pem_file     = "~/.ssh/jdl-k8s-kp.pem"
+  key_name     = "jdl-k8s-kp"
 }
 
 
@@ -27,7 +28,7 @@ resource "tls_private_key" "rsa_key" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair
 resource "aws_key_pair" "ec2_key_pair" {
-  key_name   = "jdl-k8s-kp"
+  key_name   = local.key_name
   public_key = tls_private_key.rsa_key.public_key_openssh
 
   provisioner "local-exec" {
@@ -56,6 +57,13 @@ resource "aws_security_group" "ec2_sg_control_plane" {
     to_port         = 6443
     protocol        = "tcp"
     security_groups = [aws_security_group.ec2_sg_worker.id]
+  }
+  ingress {
+    description = "TCP"
+    from_port   = 6443
+    to_port     = 6443
+    protocol    = "tcp"
+    cidr_blocks = ["${var.my_public_ip}/32"]
   }
   ingress {
     description     = "TCP"

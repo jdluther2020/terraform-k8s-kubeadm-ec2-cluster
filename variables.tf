@@ -1,3 +1,8 @@
+variable "my_public_ip" {
+  description = "Enter your public IP. Run 'curl ifconfig.me' is one way to find out."
+  type        = string
+}
+
 variable "worker_node_count" {
   description = "Number of worker nodes"
   type        = number
