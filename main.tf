@@ -1,4 +1,5 @@
 # Terraform AWS Provider - https://registry.terraform.io/providers/hashicorp/aws/latest/docs
+
 terraform {
   required_providers {
     aws = {
@@ -49,7 +50,7 @@ resource "aws_security_group" "ec2_sg_control_plane" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${var.my_public_ip}/32"]
   }
   ingress {
     description     = "TCP"
